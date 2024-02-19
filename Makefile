@@ -22,7 +22,7 @@ $(SONAME): linenoise_lua.o linenoise/linenoise-amalgamation.o
 linenoise_lua.o: CFLAGS += -DUSE_SYSTEM_LUA=$(USE_SYSTEM_LUA) -Wall -Werror -std=c99
 linenoise_lua.o: linenoise_lua.c linenoise/linenoise.h
 linenoise/linenoise-amalgamation.o: linenoise/linenoise-amalgamation.c linenoise/linenoise.h
-linenoise/linenoise-amalgamation.c: linenoise/utf8.h linenoise/utf8.c linenoise/stringbuf.h linenoise/stringbuf.c $(WIN32_SUPPORT) linenoise/linenoise.c
+linenoise/linenoise-amalgamation.c: linenoise/utf8.h linenoise/utf8.c linenoise/stringbuf.h linenoise/stringbuf.c linenoise/linenoise.c $(WIN32_SUPPORT)
 	@for i in $^; do echo "#line 1 \"$$i\""; cat $$i; done > $@
 
 clean:
