@@ -31,7 +31,7 @@ jobs:
           make
           mv linenoise_lua.so linenoise_lua.so.intel
           make clean
-          CFLAGS="-target aarch64-apple-darwin" make
+          CFLAGS="-target aarch64-apple-darwin" LDFLAGS="-target aarch64-apple-darwin" make
           mv linenoise_lua.so linenoise_lua.so.arm
           lipo -create linenoise_lua.so.intel linenoise_lua.so.arm -output linenoise_lua.so
 
