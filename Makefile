@@ -1,21 +1,24 @@
-USE_SYSTEM_LUA := 0
-
+#===============================#
+#      IMPORTANT VARIABLES      #
+#===============================#
+USE_SYSTEM_LUA ?= 0
 STRIP ?= strip -x
+
+
 SOSUFFIX := so
-WIN32_SUPPORT :=
+LIBS :=
 
 ifeq ($(OS),Windows_NT)
 	SOSUFFIX := dll
-	WIN32_SUPPORT := linenoise/linenoise-win32.c
 endif
 
-LUA_LIBS_0 :=
-LUA_LIBS_1 := -llua
-LIBS := $(LUA_LIBS_$(USE_SYSTEM_LUA))
-CFLAGS += -fPIC -Os
+ifeq ($(USE_SYSTEM_LUA),1)
+	LIBS := -llua
+endif
 
 SONAME := linenoise_lua.$(SOSUFFIX)
 OBJS := linenoise_lua.o linenoise/linenoise-amalgamation.o linenoise/linenoise-amalgamation.c
+CFLAGS += -fPIC -Os
 
 $(SONAME): linenoise_lua.o linenoise/linenoise-amalgamation.o
 	$(CC) -shared $(LDFLAGS) -o $@ $^ $(LIBS)
@@ -24,7 +27,7 @@ $(SONAME): linenoise_lua.o linenoise/linenoise-amalgamation.o
 linenoise_lua.o: CFLAGS += -DUSE_SYSTEM_LUA=$(USE_SYSTEM_LUA) -Wall -Werror -std=c99
 linenoise_lua.o: linenoise_lua.c linenoise/linenoise.h
 linenoise/linenoise-amalgamation.o: linenoise/linenoise-amalgamation.c linenoise/linenoise.h
-linenoise/linenoise-amalgamation.c: linenoise/utf8.h linenoise/utf8.c linenoise/stringbuf.h linenoise/stringbuf.c linenoise/linenoise.c $(WIN32_SUPPORT)
+linenoise/linenoise-amalgamation.c: linenoise/utf8.h linenoise/utf8.c linenoise/stringbuf.h linenoise/stringbuf.c linenoise/linenoise.c
 	@for i in $^; do echo "#line 1 \"$$i\""; cat $$i; done > $@
 
 clean:
