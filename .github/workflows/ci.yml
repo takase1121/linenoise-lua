@@ -1,0 +1,62 @@
+name: CI
+on: [push]
+
+jobs:
+  ci-linux:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      
+      - uses: docker://ghcr.io/lite-xl/lite-xl-build-box:v2.1.1
+        with:
+          args: make
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Linux artifacts
+          path: linenoise_lua.so
+  
+  ci-macos:
+    runs-on: macos-latest
+    steps:
+      
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      
+      - run: |
+        make
+        mv linenoise_lua.so linenoise_lua.so.intel
+        CFLAGS="-target armv8a-apple-darwin-macho" make
+        mv linenoise_lua.so linenoise_lua.so.arm
+        lipo -create linenoise_lua.so.intel linenoise_lua.so.arm -output linenoise_lua.so
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macOS artifacts
+          path: linenoise_lua.so
+
+  ci-windows:
+    runs-on: windows-latest
+    steps:
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          install: >-
+            make
+            mingw-w64-x86_64-gcc
+      
+      - run: make
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Windows artifacts
+          path: linenoise_lua.dll
