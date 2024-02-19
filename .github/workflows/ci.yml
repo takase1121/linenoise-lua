@@ -12,15 +12,25 @@ jobs:
       
       - uses: docker://ghcr.io/lite-xl/lite-xl-build-box:v2.1.1
         with:
-          args: make
+          args: make && mv linenoise_lua.so linenoise_lua-x86_64-linux.so
 
       - uses: actions/upload-artifact@v4
         with:
           name: Linux artifacts
-          path: linenoise_lua.so
+          path: linenoise_lua-x86_64-linux.so
   
   ci-macos:
     runs-on: macos-latest
+    strategy:
+      matrix:
+        config:
+          - {target: 'x86_64-apple-darwin', name: 'x86_64-darwin'}
+          - {target: 'aarch64-apple-darwin', name: 'aarch64-darwin'}
+
+    env:
+      CFLAGS: -target ${{ matrix.config.target }}
+      LDFLAGS: -target ${{ matrix.config.target }}
+
     steps:
       
       - uses: actions/checkout@v4
@@ -29,19 +39,21 @@ jobs:
       
       - run: |
           make
-          mv linenoise_lua.so linenoise_lua.so.intel
-          make clean
-          CFLAGS="-target aarch64-apple-darwin" LDFLAGS="-target aarch64-apple-darwin" make
-          mv linenoise_lua.so linenoise_lua.so.arm
-          lipo -create linenoise_lua.so.intel linenoise_lua.so.arm -output linenoise_lua.so
+          mv linenoise_lua.so linenoise_lua-${{ matrix.config.name }}.so
 
       - uses: actions/upload-artifact@v4
         with:
-          name: macOS artifacts
-          path: linenoise_lua.so
+          name: macOS artifacts (${{ matrix.config.name }})
+          path: linenoise_lua-${{ matrix.config.name }}.so
 
   ci-windows:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        config:
+          - {msystem: MINGW32, prefix: 'i686', name: 'x86-windows'}
+          - {msystem: MINGW64, prefix: 'x86_64', name: 'x86_64-windows'}
+
     defaults:
       run:
         shell: msys2 {0}
@@ -54,14 +66,29 @@ jobs:
 
       - uses: msys2/setup-msys2@v2
         with:
-          msystem: MINGW64
+          msystem: ${{ matrix.config.msystem }}
           install: >-
             make
-            mingw-w64-x86_64-gcc
+            mingw-w64-${{ matrix.config.prefix }}-gcc
       
-      - run: make
+      - run: |
+          make
+          mv linenoise_lua.dll linenoise_lua-${{ matrix.config.name }}.dll
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Windows artifacts
-          path: linenoise_lua.dll
+          name: Windows artifacts (${{ matrix.config.name }})
+          path: linenoise_lua-${{ matrix.config.name }}.dll
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*.so,*.dll"
