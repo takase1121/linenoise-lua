@@ -1,0 +1,42 @@
+{
+    "addons": [{
+        "id": "linenoise-lua",
+        "name": "linenoise",
+        "version": "0.0.1",
+        "type": "library",
+        "description": "Add support for terminal line editing with the famous linenoise library.",
+        "mod_version": "3",
+        "files": [
+            {
+                "url": "https://github.com/takase1121/linenoise-lua/releases/download/0.0.1/linenoise_lua-x86_64-linux.so",
+                "arch": "x86_64-linux",
+                "path": "init.x86_64-linux.so",
+                "checksum": "SKIP"
+            },
+            {
+                "url": "https://github.com/takase1121/linenoise-lua/releases/download/0.0.1/linenoise_lua-x86_64-darwin.so",
+                "arch": "x86_64-darwin",
+                "path": "init.x86_64-darwin.so",
+                "checksum": "SKIP"
+            },
+            {
+                "url": "https://github.com/takase1121/linenoise-lua/releases/download/0.0.1/linenoise_lua-aarch64-darwin.so",
+                "arch": "aarch64-darwin",
+                "path": "init.aarch64-darwin.so",
+                "checksum": "SKIP"
+            },
+            {
+                "url": "https://github.com/takase1121/linenoise-lua/releases/download/0.0.1/linenoise_lua-x86_64-windows.dll",
+                "arch": "x86_64-windows",
+                "path": "init.x86_64-windows.dll",
+                "checksum": "SKIP"
+            },
+            {
+                "url": "https://github.com/takase1121/linenoise-lua/releases/download/0.0.1/linenoise_lua-x86-windows.dll",
+                "arch": "x86-windows",
+                "path": "init.x86-windows.dll",
+                "checksum": "SKIP"
+            }
+        ]
+    }]
+}
