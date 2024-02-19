@@ -1,6 +1,6 @@
 USE_SYSTEM_LUA := 0
 
-STRIP ?= strip
+STRIP ?= strip -x
 SOSUFFIX := so
 WIN32_SUPPORT :=
 
