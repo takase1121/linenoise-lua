@@ -1,3 +1,5 @@
 compile_commands.json
 linenoise/linenoise-amalgamation.c
 **/*.o
+*.so
+*.dll
