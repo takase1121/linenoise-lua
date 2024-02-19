@@ -12,7 +12,7 @@ jobs:
       
       - uses: docker://ghcr.io/lite-xl/lite-xl-build-box:v2.1.1
         with:
-          args: make && mv linenoise_lua.so linenoise_lua-x86_64-linux.so
+          args: -c "make && mv linenoise_lua.so linenoise_lua-x86_64-linux.so"
 
       - uses: actions/upload-artifact@v4
         with:
